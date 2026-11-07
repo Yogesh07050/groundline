@@ -63,6 +63,10 @@ npm run build && npm start
 
 Open <http://localhost:3000>. The console is at `/app`. Prefer Docker? `docker compose up --build`.
 
+Or deploy a free demo instance in one click:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Yogesh07050/groundline)
+
 Needs Node.js 20.19 or newer. Setup details, API reference, import formats, security notes, and
 testing are in the [technical guide](docs/technical-guide.md).
 

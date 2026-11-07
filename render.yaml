@@ -1,0 +1,30 @@
+# Render Blueprint: one-click deploy of Groundline as a free web service.
+# https://render.com/deploy?repo=https://github.com/Yogesh07050/groundline
+#
+# Free instances have no persistent disk and sleep after 15 minutes of inactivity,
+# so the knowledge base resets to the sample data on each wake. Fine for demos.
+# For real use, move to a paid instance with a disk mounted at /app/data.
+services:
+  - type: web
+    name: groundline
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false            # asked for at deploy time; get one at console.groq.com/keys
+      - key: ADMIN_PASSWORD
+        sync: false            # asked for at deploy time; your console login
+      - key: ADMIN_EMAIL
+        value: admin@groundline.local
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: TRUST_PROXY
+        value: "1"
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: LOG_LEVEL
+        value: info
