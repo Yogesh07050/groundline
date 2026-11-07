@@ -1,203 +1,85 @@
+<div align="center">
+
+<img src="web/public/favicon.svg" width="64" height="64" alt="">
+
 # Groundline
 
-A customer-support assistant that answers only from a business's own products and
-policies. When it doesn't know something, it says so, hands off to a person, and
-tells the team what to add to its knowledge.
+**AI customer support that only says what your business actually knows.**
 
-Groundline has three parts:
+Answers from your own products and policies. Hands off to a person when it's unsure.<br>
+Shows your team exactly what to add next.
 
-- **An embeddable chat widget** that goes on any website with one line of HTML.
-- **An operator console** for managing knowledge, reading conversations, working
-  handoffs, and seeing what the assistant couldn't answer.
-- **A demo storefront** for Nimbus Audio, a fictional brand, rendered from the same
-  knowledge base the assistant uses.
+[**▶ Watch the demo**](https://github.com/Yogesh07050/groundline/releases/download/v1.0/Groundline-Demo.mp4) · [Quick start](#quick-start) · [Technical guide](docs/technical-guide.md)
 
-## Demo
+<br>
+
+![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-0f5c4a?style=flat-square&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-0f5c4a?style=flat-square&logo=typescript&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-0f5c4a?style=flat-square&logo=sqlite&logoColor=white)
+![License MIT](https://img.shields.io/badge/License-MIT-0f5c4a?style=flat-square)
+
+</div>
+
+<br>
 
 [![Watch the Groundline demo (2:40)](docs/demo-poster.jpg)](https://github.com/Yogesh07050/groundline/releases/download/v1.0/Groundline-Demo.mp4)
 
-A 2:40 walkthrough recorded against the live app and the real model, with nothing
-scripted or mocked: grounded answers, guardrails, human handoff, the operator console,
-the knowledge-gap loop, and embedding on any device.
-[Watch or download the full-quality video](https://github.com/Yogesh07050/groundline/releases/download/v1.0/Groundline-Demo.mp4).
+<p align="center"><sub>2:40, recorded against the live app and the real model. Nothing scripted, nothing mocked.</sub></p>
+
+## Why Groundline
+
+Most AI chatbots guess. Groundline doesn't.
+
+| | |
+|:--|:--|
+| 🎯 **Grounded answers** | Every reply is built only from facts in your knowledge base. No invented prices, policies, or promises. |
+| 🙋 **Honest handoffs** | When it doesn't know, it says so and passes the customer to your team instead of improvising. |
+| 🔍 **Gaps, surfaced** | Every question it couldn't answer is logged, so you always know what to add next. |
+| 🛡️ **Guardrails built in** | Stays on topic, resists prompt injection, and keeps your API key on the server. |
+| ⚡ **Live in minutes** | One line of HTML on any website. Your brand colour, tone, and contacts are set from the console. |
+
+## What you get
+
+| Chat widget | Operator console | Demo storefront |
+|:--|:--|:--|
+| Drops onto any site with a single script tag. Streams answers live, works on every device, no build step. | Manage knowledge, read every conversation, work handoffs, and see answer rates and gaps at a glance. | A sample shop for *Nimbus Audio*, built from the same knowledge base, so you can see the whole loop end to end. |
+
+## How it works
+
+1. **A customer asks** a question in the widget.
+2. **Groundline searches** your products, policies, and FAQs for the relevant facts.
+3. **The AI answers** using only those facts, streamed to the customer as it's written.
+4. **Every conversation is labelled** answered, referred, or gap, so the dashboard shows what's working.
+
+Only retrieved facts reach the model, so it can't make things up.
 
 ## Quick start
 
-Requires Node.js 20.19 or newer. `better-sqlite3` may compile during install, which
-needs Python, `make`, and a C++ compiler if no prebuilt binary matches your Node version.
-
 ```bash
 npm install
-cp .env.example .env     # add GROQ_API_KEY and ADMIN_PASSWORD
-npm run build
-npm start
+cp .env.example .env        # add GROQ_API_KEY and ADMIN_PASSWORD
+npm run build && npm start
 ```
 
-Open <http://localhost:3000>. Sign in to the console at `/app` with `ADMIN_EMAIL` and
-`ADMIN_PASSWORD`. These are only read on first run, to create the account. If you leave
-the password empty, a random one is printed once to the server log.
+Open <http://localhost:3000>. The console is at `/app`. Prefer Docker? `docker compose up --build`.
 
-`npm start` runs in production mode, where session cookies are `Secure`. Browsers accept
-that on `localhost`, except Safari: set `COOKIE_SECURE=false` there, or on any plain-http
-host. Run behind HTTPS for real use.
+Needs Node.js 20.19 or newer. Setup details, API reference, import formats, security notes, and
+testing are in the [technical guide](docs/technical-guide.md).
 
-Without a Groq key, the console still works and the widget explains it's offline.
+## Make it yours
 
-### Development
+1. Replace the sample content on the **Knowledge** page, or import a CSV or JSON file.
+2. Set your persona, brand facts, support contacts, and accent colour in **Settings**.
+3. Paste the embed line from Settings into your website. Done.
 
-```bash
-npm run dev    # API on :3000, frontend with hot reload on :5180
-```
+## Good to know
 
-### Docker
+- Handoffs land in the console for your team to answer. Email notifications aren't included yet.
+- Answers come from the knowledge base only. There's no order or checkout lookup.
+- Built for one business on one server. Scaling out needs a shared database and rate-limit store.
 
-```bash
-docker compose up --build    # reads .env; data persists in a named volume
-```
+<br>
 
-### See it with data
-
-The dashboard shows only real data, so it starts empty. To populate it, run the scenario
-suite against the real model and save the results. They're labeled "Test scenario" and
-can be filtered out or deleted:
-
-```bash
-npm run test:live -- --save
-```
-
-## How a reply is produced
-
-```
-Widget or playground
-   │  POST /conversations/:id/messages
-   ▼
-Validate, rate limit, check the conversation's token
-   ▼
-Store the customer's message
-   ▼
-Retrieve: BM25 search over live knowledge entries,
-          using the previous exchange to resolve follow-ups
-   ▼
-Ground:   system prompt with the matching facts and strict rules
-   ▼
-Stream:   Groq chat completion, sent to the browser over SSE
-   ▼
-Classify: answered / referred to team / no match / small talk
-   ▼
-Store the reply with its sources, model, latency, and token counts
-```
-
-**The server owns the conversation history.** Clients send only the new message, so a
-visitor can't forge earlier assistant turns to steer the model.
-
-**Retrieval is a keyword index, not a vector database.** For a catalog of this size,
-in-memory BM25 is accurate and instant, with no embedding costs. For a much larger or more
-loosely worded catalog, replace `server/src/modules/retrieval/`; the rest of the pipeline
-only uses its `search` interface.
-
-**Outcome labels are heuristics.** They come from retrieval results and reply wording. They
-describe how the assistant behaved, not whether the customer's problem was solved, so treat
-"answer rate" as a useful signal and not as a resolution rate.
-
-## Project structure
-
-```
-server/
-  src/
-    config/env.ts        Validated environment configuration
-    db/                  SQLite connection, migrations, first-run seed
-    lib/                 Errors, logging, crypto, HTTP helpers
-    middleware/          Error handling, rate limits, CORS
-    modules/
-      auth/              Operator accounts and sessions
-      knowledge/         Entries, validation, CSV/JSON import
-      retrieval/         Tokenizer and BM25 index
-      chat/              Prompt, Groq client, pipeline, SSE, outcome classifier
-      conversations/     Storage and operator routes
-      handoffs/          Requests to reach a person
-      analytics/         Reports computed from stored conversations
-      settings/          Persona, brand, and widget settings
-      publicApi/         Anonymous routes for the widget and storefront
-    app.ts               Wires services and routes together
-    index.ts             Process entry point
-  widget/widget.js       The embeddable widget (no dependencies, no build)
-  scripts/               Live scenario suite, password reset
-  tests/                 API and unit tests
-web/
-  src/
-    components/          Design-system primitives, charts, console layout
-    lib/                 API client, streaming, formatting
-    pages/               One file per screen
-    styles/              Tokens, base components, page styles
-```
-
-## API overview
-
-All routes are under `/api/v1`. Errors have one shape:
-`{ "error": { "code", "message", "details?", "requestId" } }`.
-
-| Area | Routes | Access |
-|---|---|---|
-| Widget | `GET /public/config`, `GET /public/catalog`, `POST /public/conversations` | Public, rate limited |
-| Conversation | `GET /public/conversations/:id`, `POST .../messages` (SSE), `POST .../retry` (SSE), `POST .../messages/:id/feedback`, `POST .../handoff` | `X-Visitor-Token` for that conversation |
-| Auth | `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `POST /auth/password` | Session cookie |
-| Knowledge | `GET/POST /admin/knowledge`, `GET/PUT/PATCH/DELETE /admin/knowledge/:id`, `GET .../export`, `GET .../retrieval-test`, `GET .../templates/:type`, `GET/POST .../imports`, `POST .../imports/preview` | Operator |
-| Conversations | `GET /admin/conversations`, `GET .../export.csv`, `GET/PATCH/DELETE /admin/conversations/:id` | Operator |
-| Handoffs | `GET /admin/handoffs`, `PATCH /admin/handoffs/:id` | Operator |
-| Reports | `GET /admin/analytics/overview`, `GET /admin/analytics/gaps`, `POST /admin/analytics/gaps/dismiss` | Operator |
-| Settings | `GET/PUT /admin/settings`, `GET /admin/provider` | Operator |
-| Playground | `POST /admin/playground/conversations`, `POST .../:id/messages` (SSE), `POST .../:id/retry` (SSE) | Operator |
-
-## Importing knowledge
-
-The console accepts `.csv` and `.json` files up to 2 MB and 1,000 rows. It validates every
-row and shows what will change before saving. Rows are matched to existing entries by title.
-
-- **CSV:** templates are on the import page. Separate list items with `|` and add
-  specifications as `spec:weight` style columns.
-- **JSON:** the console's own export, or `{ "products": [], "policies": [], "faqs": [] }`.
-
-## Adapting it for a client
-
-1. Replace the sample content on the **Knowledge** page, or import a file.
-2. Set the persona, brand facts, support contacts, and accent color in **Settings**.
-3. Paste the embed line from Settings into the client's site, and list their domain in
-   `ALLOWED_ORIGINS`.
-
-## Testing
-
-```bash
-npm test             # API, retrieval, and utility tests; no API key or network needed
-npm run typecheck
-npm run test:live    # real model: grounding, hallucination, and injection scenarios
-```
-
-`npm test` runs the real app against an in-memory database. Only the model is scripted.
-`npm run test:live` skips cleanly when no key is set.
-
-## Security notes
-
-- The Groq key stays on the server. Passwords are hashed with scrypt; session and visitor
-  tokens are stored only as hashes.
-- Console cookies are `HttpOnly` and `SameSite=Lax`, and cross-site writes are also rejected
-  by an origin check.
-- The console and widget render model output as text nodes, never as HTML.
-- CSV exports neutralize spreadsheet formula injection.
-- Forgot the password? `npm run reset-password -- "<new password>" [email]`
-
-## Known limitations
-
-- **Handoffs don't send email.** Requests appear in the console for the team to answer. There
-  is no mail provider, so connect one before promising customers an automatic notification.
-- **The assistant can't see orders.** It answers from the knowledge base only and has no order
-  system or checkout integration.
-- **One workspace, one operator role.** There's no multi-tenancy, and additional operator
-  accounts aren't exposed in the console.
-- **Single instance.** SQLite and in-memory rate limits suit one server. Scaling out needs a
-  shared database and a shared rate-limit store such as Redis.
-
-Nimbus Audio, its products, prices, and policies are fictional sample data.
-
-## License
-
-MIT
+<div align="center">
+<sub>MIT licensed · Nimbus Audio, its products, prices, and policies are fictional sample data.</sub>
+</div>
