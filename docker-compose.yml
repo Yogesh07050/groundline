@@ -1,0 +1,15 @@
+services:
+  groundline:
+    build: .
+    ports:
+      - '3000:3000'
+    env_file: .env
+    environment:
+      # Plain http for local use. Remove this behind HTTPS.
+      COOKIE_SECURE: 'false'
+    volumes:
+      - groundline-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  groundline-data:

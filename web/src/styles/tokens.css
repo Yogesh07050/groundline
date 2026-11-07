@@ -1,0 +1,58 @@
+:root {
+  /* Surfaces */
+  --bg: #f6f7f5;
+  --surface: #ffffff;
+  --surface-2: #f3f5f2;
+  --line: #e2e6e2;
+  --line-strong: #cdd3cd;
+
+  /* Text (all pass 4.5:1 on --surface and --bg) */
+  --ink: #14201b;
+  --ink-2: #4e5a54;
+  --ink-3: #66716b;
+
+  /* Brand and states */
+  --accent: #0f5c4a;
+  --accent-hover: #0b4a3b;
+  --accent-tint: #e7f0ec;
+  --warn: #7f5200;
+  --warn-tint: #fbf3e0;
+  --danger: #a4302a;
+  --danger-tint: #fbf1f0;
+  --neutral-tint: #eef0ed;
+
+  /* Chart marks, checked for colorblind separation (worst adjacent dE 12.2) */
+  --mark-1: #16876a;
+  --mark-2: #d98a0b;
+  --mark-3: #b5432f;
+  --mark-muted: #cdd3cd;
+
+  /* Type */
+  --font: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.625rem;
+
+  /* Space, on a 4px grid */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+  --s24: 96px;
+
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-pop: 0 12px 32px rgb(20 32 27 / 0.14);
+  --sidebar: 224px;
+}

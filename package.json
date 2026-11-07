@@ -1,0 +1,27 @@
+{
+  "name": "groundline",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Groundline: a grounded AI customer-support assistant with an operator console and an embeddable widget.",
+  "license": "MIT",
+  "author": "Dominic",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,blue \"npm run dev -w server\" \"npm run dev -w web\"",
+    "build": "npm run build -w web && npm run build -w server",
+    "start": "npm run start -w server",
+    "test": "npm test -w server && npm test -w web",
+    "test:live": "npm run test:live -w server --",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w web",
+    "reset-password": "npm run reset-password -w server --"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.5"
+  }
+}
