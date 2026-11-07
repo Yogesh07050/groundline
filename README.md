@@ -12,6 +12,15 @@ Groundline has three parts:
 - **A demo storefront** for Nimbus Audio, a fictional brand, rendered from the same
   knowledge base the assistant uses.
 
+## Demo
+
+[![Watch the Groundline demo (2:40)](docs/demo-poster.jpg)](https://github.com/Yogesh07050/groundline/releases/download/v1.0/Groundline-Demo.mp4)
+
+A 2:40 walkthrough recorded against the live app and the real model, with nothing
+scripted or mocked: grounded answers, guardrails, human handoff, the operator console,
+the knowledge-gap loop, and embedding on any device.
+[Watch or download the full-quality video](https://github.com/Yogesh07050/groundline/releases/download/v1.0/Groundline-Demo.mp4).
+
 ## Quick start
 
 Requires Node.js 20.19 or newer. `better-sqlite3` may compile during install, which
