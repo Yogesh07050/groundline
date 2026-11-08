@@ -63,7 +63,8 @@ npm run build && npm start
 
 Open <http://localhost:3000>. The console is at `/app`. Prefer Docker? `docker compose up --build`.
 
-Or deploy a free demo instance in one click:
+Or deploy a free demo instance in one click. Paste your Groq key when asked. A console
+password is generated for you and shown under **Environment** on the Render service page.
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Yogesh07050/groundline)
 
